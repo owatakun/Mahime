@@ -1,0 +1,19 @@
+name: Mahime
+main: com.github.owatakun.mahime.Mahime
+version: 1.0.0
+description: Mahime plugin.
+commands:
+  mahime:
+    description: Give the all the privileges of Mahime
+    aliases: mhm
+    usage: |
+           /mahime gkit - kit一斉配布
+           /mahime gskit <kitName> [Player] - 指定したkitを配布
+           /mahime reload - 設定ファイル再読み込み
+           /mahime kitlist - 読み込まれている職一覧表示(config.ymlで設定されている値)
+    permission: Mahime.admin
+    permission-message: You don't have permission!
+permissions:
+  mahime.*:
+    description: Give the all the privileges of mahime
+    default: op

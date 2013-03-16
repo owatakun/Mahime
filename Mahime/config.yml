@@ -1,0 +1,17 @@
+UseJobs:
+  - kizoku
+  - dorei
+  - maken
+  - sanzoku
+  - tozoku
+  - sinkan
+  - akuma
+  - ouji
+  - himegimi
+  - junrei
+  - seizon
+gkitMessage: "&2Ç†Ç»ÇΩÇÃêEã∆ÇÕ &6%job% &2Ç≈Ç∑"
+KitNotice:
+  dorei: "&2ãMë∞ÇÕ &c%kizoku% &2Ç≥ÇÒÇ≈Ç∑"
+AutoLogOpen: false
+notepadPass: "C:\\windows\\system32\\notepad.exe"

@@ -1,0 +1,140 @@
+Kits:
+  maken:
+    name: ñÇåï
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268^16:2"
+  sanzoku:
+    name: éRëØ
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268^16:2"
+      2: "261"
+      3: "262:8"
+  tozoku:
+    name: ìêëØ
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268"
+  sinkan:
+    name: ê_äØ
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268"
+  akuma:
+    name: à´ñÇ
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268"
+      2: "299^0:2"
+      3: "268^16:2"
+  ouji:
+    name: â§éq
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268^16:1"
+  himegimi:
+    name: ïPåN
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268"
+      2: "322"
+  kizoku:
+    name: ãMë∞
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268"
+  dorei:
+    name: ìzóÍ
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268"
+  junrei:
+    name: èÑóÁ
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268"
+  seizon:
+    name: ê∂ë∂é“
+    message: "null"
+    command: "null"
+    armor:
+      helmet: "null"
+      chestplate: "299"
+      leggins: "300"
+      boots: "301"
+    items:
+      0: "297:3"
+      1: "268^16:1"
+      2: "261"
+      3: "262:3"
