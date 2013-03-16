@@ -5,9 +5,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268^16:2"
@@ -17,9 +17,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268^16:2"
@@ -31,9 +31,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268"
@@ -43,9 +43,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268"
@@ -55,9 +55,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268"
@@ -69,9 +69,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268^16:1"
@@ -81,9 +81,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268"
@@ -94,9 +94,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268"
@@ -106,9 +106,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268"
@@ -118,9 +118,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268"
@@ -130,9 +130,9 @@ Kits:
     command: "null"
     armor:
       helmet: "null"
-      chestplate: "299"
-      leggins: "300"
-      boots: "301"
+      chestplate: "299^5:1"
+      leggins: "300^5:1"
+      boots: "301^5:1"
     items:
       0: "297:3"
       1: "268^16:1"
