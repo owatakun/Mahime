@@ -120,14 +120,15 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			jobPlayers.put(jobList.get(i), players.get(i).getName());
 		}
 		// ログファイル初期化
-		File logFile = new File(plugin.getDataFolder(), "log.txt");
+		SimpleDateFormat time = new SimpleDateFormat("MMdd'_'HHmm");
+		Date date = new Date();
+		File logFile = new File(plugin.getDataFolder(), "log_" + time.format(date) + ".txt");
 		if (logFile.exists()) {
-			logFile.delete();
+			logFile.renameTo(new File(logFile.getName() + ".bak"));
 		}
 		logFile.createNewFile();
 		BufferedWriter log = new BufferedWriter(new FileWriter(logFile, true));
-		SimpleDateFormat time = new SimpleDateFormat("yyyy'/'MM'/'dd HH':'mm':'ss");
-		Date date = new Date();
+		time.applyPattern("yyyy'/'MM'/'dd HH':'mm':'ss");
 		log.write("魔姫kitログ 実行日時:" + time.format(date));
 		log.newLine();
 		log.newLine();
