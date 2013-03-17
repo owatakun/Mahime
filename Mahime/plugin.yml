@@ -1,6 +1,6 @@
 name: Mahime
 main: com.github.owatakun.mahime.Mahime
-version: 1.0.0
+version: 1.0.1
 description: Mahime plugin.
 commands:
   mahime:
