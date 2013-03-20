@@ -13,12 +13,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class MahimeCommandExecutor implements CommandExecutor {
@@ -31,16 +36,22 @@ public class MahimeCommandExecutor implements CommandExecutor {
 	private Kits Kits;
 	private LinkedHashMap<String, String> playersJob;
 	private LinkedHashMap<String, String> jobPlayers;
+	private File rcFile;
+	private YamlConfiguration rcConf;
+	private RandomChest rc;
 
-	public MahimeCommandExecutor(Plugin plugin){
+	public MahimeCommandExecutor(FileConfiguration config, Plugin plugin){
 		this.plugin = plugin;
 		this.logger = plugin.getLogger();
-		this.config = plugin.getConfig();
+		this.config = config;
 		this.kitsFile = new File(plugin.getDataFolder(), "kits.yml");
 		this.kitsConf = YamlConfiguration.loadConfiguration(kitsFile);
 		this.Kits = new Kits(plugin, kitsConf);
 		this.playersJob = new LinkedHashMap<String, String>();
 		this.jobPlayers = new LinkedHashMap<String, String>();
+		this.rcFile = new File(plugin.getDataFolder(), "rc.yml");
+		this.rcConf = YamlConfiguration.loadConfiguration(rcFile);
+		this.rc = new RandomChest(plugin, config, rcConf);
 	}
 
 	@Override
@@ -53,6 +64,9 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			// kits.yml
 			kitsConf = YamlConfiguration.loadConfiguration(kitsFile);
 			Kits = new Kits(plugin, kitsConf);
+			// rc.yml
+			rcConf = YamlConfiguration.loadConfiguration(rcFile);
+			rc = new RandomChest(plugin, config, rcConf);
 			sender.sendMessage("設定を再読み込みしました");
 			return true;
 		}
@@ -71,6 +85,9 @@ public class MahimeCommandExecutor implements CommandExecutor {
 		// kitリスト
 		if (args.length == 1 && args[0].equalsIgnoreCase("kitlist")) {
 			return execkitlist (sender, cmd, commandLabel, args);
+		}
+		if (args.length >= 1 && args[0].equalsIgnoreCase("rc")) {
+			return execrc (sender, cmd, commandLabel, args);
 		}
 		return false;
 	}
@@ -229,6 +246,76 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			sender.sendMessage(job + " , " + kitName);
 		}
 		return true;
+	}
+
+	/**
+	 * rcコマンド
+	 */
+	private boolean execrc(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		// ワールド取得
+		World world;
+		if (sender instanceof Player) {
+			world = ((Player) sender).getWorld();
+		} else if (sender instanceof BlockCommandSender){
+			world = ((BlockCommandSender) sender).getBlock().getWorld();
+		} else {
+			sender.sendMessage("このコマンドはゲーム内からのみ実行出来ます");
+			return true;
+		}
+		// rcコマンド
+		if (args.length == 1) {
+			ArrayList<Point> list = rc.getrcPointListCopy();
+			if (list.size() < 4) {
+				sender.sendMessage("Error: ポイント数が4未満です");
+				return true;
+			}
+			Collections.shuffle(list);
+			plugin.getLogger().info("RandomChest Result");
+			for (int i = 0; i < 4; i++) {
+				Point pt = list.get(i);
+				int x, y, z;
+				x = pt.getX();
+				y = pt.getY();
+				z = pt.getZ();
+				Block block = world.getBlockAt(x, y, z);
+				block.setTypeId(54);
+				Chest chest = (Chest) block.getState();
+				ItemStack item = new ItemStack(264, 1);
+				chest.getInventory().setItem(13, item);
+				plugin.getLogger().info(i + 1 + " : " +  pt.serialize());
+			}
+			sender.sendMessage("チェストを配置しました。配置先はコンソールを参照してください");
+			return true;
+		}
+		// edit
+		if (args.length >= 2 && args[1].equalsIgnoreCase("edit")) {
+			// コマンドブロックはEditModeは使用させない
+			if (sender instanceof BlockCommandSender) {
+				sender.sendMessage("Error: EditModeはプレイヤーのみ実行出来ます");
+				return true;
+			}
+			// edit start
+			if (args.length == 3 && args[2].equalsIgnoreCase("start")) {
+				// 現在EditModeなら抜ける
+				if (RandomChest.isRcEditMode()) {
+					sender.sendMessage("Error: 既にEditModeです");
+					return true;
+				}
+				// EditModeに入る
+				rc.enableEditMode(world, sender);
+				return true;
+			}
+			// edit end
+			if (args.length == 3 && args[2].equalsIgnoreCase("end")) {
+				if (RandomChest.isRcEditMode()) {
+					rc.disableEditMode(sender);
+				} else {
+					sender.sendMessage("Error: EditModeではありません");
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -11,9 +11,13 @@ commands:
            /mahime gskit <kitName> [Player] - 指定したkitを配布
            /mahime reload - 設定ファイル再読み込み
            /mahime kitlist - 読み込まれている職一覧表示(config.ymlで設定されている値)
-    permission: Mahime.admin
+    permission: mahime.admin
     permission-message: You don't have permission!
 permissions:
   mahime.*:
     description: Give the all the privileges of mahime
+    children:
+      mahime.admin: true
+  mahime.admin:
+    description: Allow mahime commands.
     default: op
