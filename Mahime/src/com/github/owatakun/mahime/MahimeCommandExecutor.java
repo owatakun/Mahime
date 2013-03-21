@@ -297,7 +297,7 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			// edit start
 			if (args.length == 3 && args[2].equalsIgnoreCase("start")) {
 				// 現在EditModeなら抜ける
-				if (RandomChest.isRcEditMode()) {
+				if (RandomChest.instance.isRcEditMode()) {
 					sender.sendMessage("Error: 既にEditModeです");
 					return true;
 				}
@@ -307,7 +307,7 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			}
 			// edit end
 			if (args.length == 3 && args[2].equalsIgnoreCase("end")) {
-				if (RandomChest.isRcEditMode()) {
+				if (RandomChest.instance.isRcEditMode()) {
 					rc.disableEditMode(sender);
 				} else {
 					sender.sendMessage("Error: EditModeではありません");

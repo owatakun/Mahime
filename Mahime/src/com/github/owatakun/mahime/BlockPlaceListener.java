@@ -12,7 +12,7 @@ public class BlockPlaceListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		// EditMode以外なら抜ける
-		if (!RandomChest.isRcEditMode()) {
+		if (!RandomChest.instance.isRcEditMode()) {
 			return;
 		}
 		// 置かれたブロックと置いたプレイヤーを取得

@@ -16,7 +16,7 @@ import org.bukkit.plugin.Plugin;
 
 public class RandomChest {
 
-	private static boolean rcEditMode;
+	private boolean rcEditMode;
 	private Plugin plugin;
 	private YamlConfiguration rcConf;
 	private ArrayList<Point> rcPointList;
@@ -148,7 +148,7 @@ public class RandomChest {
 	 * rcEditModeのgetter
 	 * @return rcEditMode
 	 */
-	public static boolean isRcEditMode() {
+	public boolean isRcEditMode() {
 		return rcEditMode;
 	}
 }

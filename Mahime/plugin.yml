@@ -11,7 +11,7 @@ commands:
            /mahime gskit <kitName> [Player] - 指定したkitを配布
            /mahime reload - 設定ファイル再読み込み
            /mahime kitlist - 読み込まれている職一覧表示(config.ymlの値)
-           /mahime rc - 登録されたポイントからランダムに神官用チェスト配置
+           /mahime rc - 登録されたポイントからランダムに巡礼用チェスト配置
            /mahime rc edit start - EditModeの開始
            /mahime rc edit end - EditModeの終了
     permission: mahime.admin

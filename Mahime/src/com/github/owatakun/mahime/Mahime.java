@@ -39,7 +39,7 @@ public class Mahime extends JavaPlugin{
 	 */
 	public void onDisable(){
 		// EditModeを終了しておく
-		if (RandomChest.isRcEditMode()) {
+		if (RandomChest.instance.isRcEditMode()) {
 			getServer().broadcast(Util.repSec("&7&o") + "[Mahime] Disable EditMode...", "mahime.admin");
 			RandomChest.instance.disableEditMode((getServer().getConsoleSender()));
 		}
