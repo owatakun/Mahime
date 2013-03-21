@@ -186,7 +186,7 @@ public class MahimeCommandExecutor implements CommandExecutor {
 		}
 		log.close();
 		if (config.getBoolean("AutoLogOpen")) {
-			ProcessBuilder pb = new ProcessBuilder(config.getString("notepadPass"), logFile.toString());
+			ProcessBuilder pb = new ProcessBuilder(config.getString("notepadPath"), logFile.toString());
 			pb.start();
 		}
 		sender.sendMessage("配布が完了しました");

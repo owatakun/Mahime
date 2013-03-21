@@ -13,5 +13,6 @@ UseJobs:
 gkitMessage: "&2Ç†Ç»ÇΩÇÃêEã∆ÇÕ &6%job% &2Ç≈Ç∑"
 KitNotice:
   dorei: "&2ãMë∞ÇÕ &c%kizoku% &2Ç≥ÇÒÇ≈Ç∑"
+rcEditBlock: 120
 AutoLogOpen: false
-notepadPass: "C:\\windows\\system32\\notepad.exe"
+notepadPath: "C:\\windows\\system32\\notepad.exe"
