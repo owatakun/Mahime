@@ -12,11 +12,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class RandomChest {
 
 	private boolean rcEditMode;
+	private int rcEditBlock;
 	private Plugin plugin;
 	private YamlConfiguration rcConf;
 	private ArrayList<Point> rcPointList;
@@ -31,6 +33,8 @@ public class RandomChest {
 		this.rcFile = new File(plugin.getDataFolder(), "rc.yml");
 		this.rcConf = rcConf;
 		this.rcPointList = new ArrayList<Point>();
+		loadRcPointList();
+		this.rcEditBlock = rcConf.getInt("rcEditBlock", 120);
 	}
 	/**
 	 * rcEditModeを有効にして初期処理を行う
@@ -38,24 +42,13 @@ public class RandomChest {
 	protected void enableEditMode(World world, CommandSender sender) {
 		rcEditMode = true;
 		enableWorld = world;
-		// rc.ymlにデータが存在すればリストに読み込む
-		if (rcConf.contains("rcPointList")) {
-			List<String> tempList = rcConf.getStringList("rcPointList");
-			rcPointList.clear();
-			for (String temp: tempList) {
-				Point pt = Point.deserialize(temp);
-				if (pt != null) {
-					rcPointList.add(pt);
-				}
-			}
-		}
 		// リストのデータに従って指示ブロックを設置する
 		ArrayList<Point> errList = new ArrayList<Point>();
 		for (int i = 0; i < rcPointList.size();) {
 			Point pt = rcPointList.get(i);
 			Block block = world.getBlockAt(pt.getX(), pt.getY(), pt.getZ());
 			if (block.getTypeId() == 0) {
-				block.setTypeId(41);
+				block.setTypeId(getRcEditBlock());
 				i++;
 			} else {
 				sender.sendMessage(block.getType().toString());
@@ -63,6 +56,7 @@ public class RandomChest {
 				rcPointList.remove(i);
 			}
 		}
+		((Player) sender).getInventory().addItem(new ItemStack(getRcEditBlock(), 1));
 		sender.sendMessage("EditModeを開始しました");
 		if (errList.size() != 0) {
 			sender.sendMessage("Error: 以下の箇所に他のブロックが存在したため、これらの指定を削除しました");
@@ -148,7 +142,32 @@ public class RandomChest {
 	 * rcEditModeのgetter
 	 * @return rcEditMode
 	 */
-	public boolean isRcEditMode() {
+	protected boolean isRcEditMode() {
 		return rcEditMode;
+	}
+
+	/**
+	 * rcEditBlockのgetter
+	 * @return rcEditBlock;
+	 */
+	protected int getRcEditBlock() {
+		return rcEditBlock;
+	}
+
+	/**
+	 * rcPointListの初期化
+	 */
+	private void loadRcPointList() {
+		// rc.ymlにデータが存在すればリストに読み込む
+		if (rcConf.contains("rcPointList")) {
+			List<String> tempList = rcConf.getStringList("rcPointList");
+			rcPointList.clear();
+			for (String temp: tempList) {
+				Point pt = Point.deserialize(temp);
+				if (pt != null) {
+					rcPointList.add(pt);
+				}
+			}
+		}
 	}
 }

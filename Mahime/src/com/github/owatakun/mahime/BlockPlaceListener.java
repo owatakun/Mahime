@@ -19,7 +19,7 @@ public class BlockPlaceListener implements Listener {
 		Block block = event.getBlockPlaced();
 		Player player = event.getPlayer();
 		// Edit指示ブロックでなければ抜ける
-		if (block.getTypeId() != 41) {
+		if (block.getTypeId() != RandomChest.instance.getRcEditBlock()) {
 			return;
 		}
 		if (RandomChest.instance.addRCPoint(player, block.getLocation())) {

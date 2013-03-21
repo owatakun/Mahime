@@ -18,7 +18,7 @@ public class BlockBreakListener implements Listener {
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
 		// Edit指示ブロックでなければ抜ける
-		if (block.getTypeId() != 41) {
+		if (block.getTypeId() != RandomChest.instance.getRcEditBlock()) {
 			return;
 		}
 		if (RandomChest.instance.removeRCPoint(player, block.getLocation())) {

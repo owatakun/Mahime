@@ -86,6 +86,7 @@ public class MahimeCommandExecutor implements CommandExecutor {
 		if (args.length == 1 && args[0].equalsIgnoreCase("kitlist")) {
 			return execkitlist (sender, cmd, commandLabel, args);
 		}
+		// RandomChest
 		if (args.length >= 1 && args[0].equalsIgnoreCase("rc")) {
 			return execrc (sender, cmd, commandLabel, args);
 		}
@@ -285,6 +286,27 @@ public class MahimeCommandExecutor implements CommandExecutor {
 				plugin.getLogger().info(i + 1 + " : " +  pt.serialize());
 			}
 			sender.sendMessage("チェストを配置しました。配置先はコンソールを参照してください");
+			return true;
+		}
+		// list
+		if (args.length >= 2 && args[1].equalsIgnoreCase("list")) {
+			int page;
+			if (args.length == 3 && Util.tryIntParse(args[2])) {
+				page = Integer.parseInt(args[2]);
+			} else if (args.length == 2) {
+				page = 1;
+			} else {
+				return false;
+			}
+			int max = page * 10;
+			ArrayList<Point> list = rc.getrcPointListCopy();
+			if (list.size() < max) {
+				max = list.size();
+			}
+			sender.sendMessage(Util.repSec("&3") + "設定ポイントリスト " + (page * 10 -9) + "～" + max + "件目 / " + list.size() + "件中");
+			for (int i = page * 10 - 10; i < max; i++) {
+				sender.sendMessage(list.get(i).serialize());
+			}
 			return true;
 		}
 		// edit
