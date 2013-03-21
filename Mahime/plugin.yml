@@ -1,6 +1,6 @@
 name: Mahime
 main: com.github.owatakun.mahime.Mahime
-version: 1.1.0
+version: 1.1.1
 description: Mahime plugin.
 commands:
   mahime:
@@ -12,6 +12,7 @@ commands:
            /mahime reload - 設定ファイル再読み込み
            /mahime kitlist - 読み込まれている職一覧表示(config.ymlの値)
            /mahime rc - 登録されたポイントからランダムに巡礼用チェスト配置
+           /mahime rc list [Page] - ポイント一覧の表示(1ページ10件ごと)
            /mahime rc edit start - EditModeの開始
            /mahime rc edit end - EditModeの終了
     permission: mahime.admin
