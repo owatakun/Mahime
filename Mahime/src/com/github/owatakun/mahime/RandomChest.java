@@ -3,7 +3,9 @@ package com.github.owatakun.mahime;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,9 +23,11 @@ public class RandomChest {
 	private int rcEditBlock;
 	private Plugin plugin;
 	private YamlConfiguration rcConf;
-	private ArrayList<Point> rcPointList;
+	private LinkedHashMap<String, ArrayList<Point>> rcPointLists;
+//	private ArrayList<Point> rcPointList;
 	private World enableWorld;
 	private File rcFile;
+	private String nowEditing;
 	protected static RandomChest instance;
 
 	public RandomChest(Plugin plugin, FileConfiguration config, YamlConfiguration rcConf) {
@@ -32,16 +36,25 @@ public class RandomChest {
 		this.plugin = plugin;
 		this.rcFile = new File(plugin.getDataFolder(), "rc.yml");
 		this.rcConf = rcConf;
-		this.rcPointList = new ArrayList<Point>();
-		loadRcPointList();
+		this.rcPointLists = new LinkedHashMap<String, ArrayList<Point>>();
+//		this.rcPointList = new ArrayList<Point>();
+		loadRcPointLists();
 		this.rcEditBlock = rcConf.getInt("rcEditBlock", 120);
+		this.nowEditing = null;
 	}
 	/**
 	 * rcEditModeを有効にして初期処理を行う
 	 */
-	protected void enableEditMode(World world, CommandSender sender) {
+	protected void enableEditMode(World world, CommandSender sender, String listName) {
 		rcEditMode = true;
 		enableWorld = world;
+		ArrayList<Point> rcPointList = new ArrayList<Point>();
+		if (rcPointLists.containsKey(listName)) {
+			rcPointList = rcPointLists.get(listName);
+		} else {
+			sender.sendMessage("リスト名\"" + listName + "\"を作成します");
+			rcPointLists.put(listName, rcPointList);
+		}
 		// リストのデータに従って指示ブロックを設置する
 		ArrayList<Point> errList = new ArrayList<Point>();
 		for (int i = 0; i < rcPointList.size();) {
@@ -51,13 +64,13 @@ public class RandomChest {
 				block.setTypeId(getRcEditBlock());
 				i++;
 			} else {
-				sender.sendMessage(block.getType().toString());
 				errList.add(pt);
 				rcPointList.remove(i);
 			}
 		}
 		((Player) sender).getInventory().addItem(new ItemStack(getRcEditBlock(), 1));
-		sender.sendMessage("EditModeを開始しました");
+		nowEditing = listName;
+		sender.sendMessage(listName + " のEditModeを開始しました");
 		if (errList.size() != 0) {
 			sender.sendMessage("Error: 以下の箇所に他のブロックが存在したため、これらの指定を削除しました");
 			for (Point errPt: errList) {
@@ -71,20 +84,23 @@ public class RandomChest {
 	 */
 	protected void disableEditMode(CommandSender sender) {
 		if (rcEditMode) {
+			ArrayList<Point> rcPointList = rcPointLists.get(nowEditing);
 			ArrayList<String> saveList = new ArrayList<String>();
 			for (Point pt: rcPointList) {
 				saveList.add(pt.serialize());
 				Block block = enableWorld.getBlockAt(pt.getX(), pt.getY(), pt.getZ());
 				block.setTypeId(0);
 			}
-			rcConf.set("rcPointList", saveList);
+			rcConf.set(nowEditing, saveList);
 			try {
 				rcConf.save(rcFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			rcEditMode = false;
-			sender.sendMessage("EditModeを終了しました");
+			sender.sendMessage(nowEditing + " のEditModeを終了しました");
+			nowEditing = null;
+			enableWorld = null;
 		}
 	}
 
@@ -93,6 +109,7 @@ public class RandomChest {
 	 * @return 追加結果(現在は全てtrue)
 	 */
 	protected boolean addRCPoint(Player player, Location loc) {
+		ArrayList<Point> rcPointList = rcPointLists.get(nowEditing);
 		int x, y, z;
 		x = loc.getBlockX();
 		y = loc.getBlockY();
@@ -107,6 +124,7 @@ public class RandomChest {
 	 * @return 消去結果
 	 */
 	protected boolean removeRCPoint(Player player, Location loc) {
+		ArrayList<Point> rcPointList = rcPointLists.get(nowEditing);
 		boolean deleted = false;
 		int x, y, z;
 		x = loc.getBlockX();
@@ -132,10 +150,16 @@ public class RandomChest {
 
 	/**
 	 * rcPointListのコピー取得
-	 * @return rcPointListのコピー
+	 * @param listName リスト名
+	 * @return rcPointListのコピー 未存在時はnull
 	 */
-	protected ArrayList<Point> getrcPointListCopy() {
-		return new ArrayList<Point>(rcPointList);
+	protected ArrayList<Point> getrcPointListCopy(String listName) {
+		if (rcPointLists.containsKey(listName)) {
+			ArrayList<Point> rcPointList = rcPointLists.get(listName);
+			return new ArrayList<Point>(rcPointList);
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -155,19 +179,28 @@ public class RandomChest {
 	}
 
 	/**
-	 * rcPointListの初期化
+	 * rcPointListsのkeySetのgetter
+	 * @return rcPointLists.keySet()
 	 */
-	private void loadRcPointList() {
-		// rc.ymlにデータが存在すればリストに読み込む
-		if (rcConf.contains("rcPointList")) {
-			List<String> tempList = rcConf.getStringList("rcPointList");
-			rcPointList.clear();
+	protected Set<String> getListsKeys() {
+		return rcPointLists.keySet();
+	}
+
+	/**
+	 * rcPointListsの初期化
+	 */
+	private void loadRcPointLists() {
+		Set<String> keys = rcConf.getKeys(true);
+		for (String key: keys) {
+			List<String> tempList = rcConf.getStringList(key);
+			ArrayList<Point> rcPointList = new ArrayList<Point>();
 			for (String temp: tempList) {
 				Point pt = Point.deserialize(temp);
 				if (pt != null) {
 					rcPointList.add(pt);
 				}
 			}
+			rcPointLists.put(key, rcPointList);
 		}
 	}
 }

@@ -264,14 +264,22 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		// rcコマンド
-		if (args.length == 1) {
-			ArrayList<Point> list = rc.getrcPointListCopy();
+		if (args.length == 2 && args[0].equalsIgnoreCase("rc")) {
+			if (RandomChest.instance.isRcEditMode()) {
+				sender.sendMessage("現在EditModeのため実行出来ません");
+				return true;
+			}
+			if (!checkList(args[1])) {
+				sender.sendMessage("Error: リスト\"" + args[1] + "\"が存在しません");
+				return true;
+			}
+			ArrayList<Point> list = rc.getrcPointListCopy(args[1]);
 			if (list.size() < 4) {
 				sender.sendMessage("Error: ポイント数が4未満です");
 				return true;
 			}
 			Collections.shuffle(list);
-			plugin.getLogger().info("RandomChest Result");
+			plugin.getLogger().info("RandomChest Result  ListName: " + args[1]);
 			for (int i = 0; i < 4; i++) {
 				Point pt = list.get(i);
 				int x, y, z;
@@ -285,21 +293,34 @@ public class MahimeCommandExecutor implements CommandExecutor {
 				chest.getInventory().setItem(13, item);
 				plugin.getLogger().info(i + 1 + " : " +  pt.serialize());
 			}
-			sender.sendMessage("チェストを配置しました。配置先はコンソールを参照してください");
+			sender.sendMessage("リスト\"" + args[1] + "\"で配置しました。配置先はコンソールを参照してください");
 			return true;
 		}
+
 		// list
 		if (args.length >= 2 && args[1].equalsIgnoreCase("list")) {
+			if (args.length == 2) {
+				sender.sendMessage("読み込まれているリスト");
+				for (String key: RandomChest.instance.getListsKeys()) {
+					sender.sendMessage(key);
+				}
+				return true;
+			}
 			int page;
-			if (args.length == 3 && Util.tryIntParse(args[2])) {
-				page = Integer.parseInt(args[2]);
-			} else if (args.length == 2) {
+			String listName = args[2];
+			if (!checkList(listName)) {
+				sender.sendMessage("Error: リスト\"" + listName + "\"が存在しません");
+				return true;
+			}
+			if (args.length == 4 && Util.tryIntParse(args[3])) {
+				page = Integer.parseInt(args[3]);
+			} else if (args.length == 3) {
 				page = 1;
 			} else {
 				return false;
 			}
 			int max = page * 10;
-			ArrayList<Point> list = rc.getrcPointListCopy();
+			ArrayList<Point> list = rc.getrcPointListCopy(listName);
 			if (list.size() < max) {
 				max = list.size();
 			}
@@ -310,21 +331,27 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		// edit
-		if (args.length >= 2 && args[1].equalsIgnoreCase("edit")) {
+		if (args.length >= 3 && args[1].equalsIgnoreCase("edit")) {
 			// コマンドブロックはEditModeは使用させない
 			if (sender instanceof BlockCommandSender) {
 				sender.sendMessage("Error: EditModeはプレイヤーのみ実行出来ます");
 				return true;
 			}
 			// edit start
-			if (args.length == 3 && args[2].equalsIgnoreCase("start")) {
+			if (args.length == 4 && args[3].equalsIgnoreCase("start")) {
 				// 現在EditModeなら抜ける
 				if (RandomChest.instance.isRcEditMode()) {
 					sender.sendMessage("Error: 既にEditModeです");
 					return true;
 				}
+				/**
+				if (!checkList(args[2])) {
+					sender.sendMessage("Error: リスト\"" + args[2] + "\"が存在しません");
+					return true;
+				}
+				**/
 				// EditModeに入る
-				rc.enableEditMode(world, sender);
+				rc.enableEditMode(world, sender, args[2]);
 				return true;
 			}
 			// edit end
@@ -351,5 +378,18 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			message = message.replaceAll("%" + e.getKey() + "%", e.getValue());
 		}
 		return message;
+	}
+
+	/**
+	 * リスト存在チェック
+	 * @param listName リスト名
+	 * @return リストが存在するか
+	 */
+	private boolean checkList(String listName) {
+		if (rcConf.contains(listName)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
