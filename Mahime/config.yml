@@ -14,5 +14,6 @@ gkitMessage: "&2Ç†Ç»ÇΩÇÃêEã∆ÇÕ &6%job% &2Ç≈Ç∑"
 KitNotice:
   dorei: "&2ãMë∞ÇÕ &c%kizoku% &2Ç≥ÇÒÇ≈Ç∑"
 rcEditBlock: 120
+AutoChestRemove: false
 AutoLogOpen: false
 notepadPath: "C:\\windows\\system32\\notepad.exe"

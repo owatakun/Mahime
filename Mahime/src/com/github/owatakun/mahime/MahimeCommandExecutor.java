@@ -90,6 +90,14 @@ public class MahimeCommandExecutor implements CommandExecutor {
 		if (args.length >= 1 && args[0].equalsIgnoreCase("rc")) {
 			return execrc (sender, cmd, commandLabel, args);
 		}
+		// RCList
+		if (args.length >= 1 && args[0].equalsIgnoreCase("rclist")) {
+			return execrcList (sender, cmd, commandLabel, args);
+		}
+		// RCEdit
+		if (args.length >= 2 && args[0].equalsIgnoreCase("rcedit")) {
+			return execrcEdit (sender, cmd, commandLabel, args);
+		}
 		return false;
 	}
 
@@ -263,7 +271,7 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			sender.sendMessage("このコマンドはゲーム内からのみ実行出来ます");
 			return true;
 		}
-		// rcコマンド
+		// rc
 		if (args.length == 2 && args[0].equalsIgnoreCase("rc")) {
 			if (RandomChest.instance.isRcEditMode()) {
 				sender.sendMessage("現在EditModeのため実行出来ません");
@@ -278,15 +286,22 @@ public class MahimeCommandExecutor implements CommandExecutor {
 				sender.sendMessage("Error: ポイント数が4未満です");
 				return true;
 			}
+			// 実行前自動チェスト削除
+			if (config.getBoolean("AutoChestRemove", false)) {
+				for (Point pt: list) {
+					Block block = world.getBlockAt(pt.getX(), pt.getY(), pt.getZ());
+					if(block.getTypeId() == 54) {
+						Chest chest = (Chest) block.getState();
+						chest.getInventory().clear();
+					}
+					block.setTypeId(0);
+				}
+			}
 			Collections.shuffle(list);
 			plugin.getLogger().info("RandomChest Result  ListName: " + args[1]);
 			for (int i = 0; i < 4; i++) {
 				Point pt = list.get(i);
-				int x, y, z;
-				x = pt.getX();
-				y = pt.getY();
-				z = pt.getZ();
-				Block block = world.getBlockAt(x, y, z);
+				Block block = world.getBlockAt(pt.getX(), pt.getY(), pt.getZ());
 				block.setTypeId(54);
 				Chest chest = (Chest) block.getState();
 				ItemStack item = new ItemStack(264, 1);
@@ -296,73 +311,80 @@ public class MahimeCommandExecutor implements CommandExecutor {
 			sender.sendMessage("リスト\"" + args[1] + "\"で配置しました。配置先はコンソールを参照してください");
 			return true;
 		}
-
-		// list
-		if (args.length >= 2 && args[1].equalsIgnoreCase("list")) {
-			if (args.length == 2) {
-				sender.sendMessage("読み込まれているリスト");
-				for (String key: RandomChest.instance.getListsKeys()) {
-					sender.sendMessage(key);
-				}
-				return true;
-			}
-			int page;
-			String listName = args[2];
-			if (!checkList(listName)) {
-				sender.sendMessage("Error: リスト\"" + listName + "\"が存在しません");
-				return true;
-			}
-			if (args.length == 4 && Util.tryIntParse(args[3])) {
-				page = Integer.parseInt(args[3]);
-			} else if (args.length == 3) {
-				page = 1;
-			} else {
-				return false;
-			}
-			int max = page * 10;
-			ArrayList<Point> list = rc.getrcPointListCopy(listName);
-			if (list.size() < max) {
-				max = list.size();
-			}
-			sender.sendMessage(Util.repSec("&3") + "設定ポイントリスト " + (page * 10 -9) + "～" + max + "件目 / " + list.size() + "件中");
-			for (int i = page * 10 - 10; i < max; i++) {
-				sender.sendMessage(list.get(i).serialize());
+		return false;
+	}
+	/**
+	 * rcList
+	 */
+	private boolean execrcList(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		if (args.length == 1) {
+			sender.sendMessage("読み込まれているリスト");
+			for (String key: RandomChest.instance.getListsKeys()) {
+				sender.sendMessage(key);
 			}
 			return true;
 		}
-		// edit
-		if (args.length >= 3 && args[1].equalsIgnoreCase("edit")) {
-			// コマンドブロックはEditModeは使用させない
-			if (sender instanceof BlockCommandSender) {
-				sender.sendMessage("Error: EditModeはプレイヤーのみ実行出来ます");
+		int page;
+		String listName = args[1];
+		if (!checkList(listName)) {
+			sender.sendMessage("Error: リスト\"" + listName + "\"が存在しません");
+			return true;
+		}
+		if (args.length == 3 && Util.tryIntParse(args[2])) {
+			page = Integer.parseInt(args[2]);
+		} else if (args.length == 2) {
+			page = 1;
+		} else {
+			return false;
+		}
+		int max = page * 10;
+		ArrayList<Point> list = rc.getrcPointListCopy(listName);
+		if (list.size() < max) {
+			max = list.size();
+		}
+		sender.sendMessage(Util.repSec("&3") + listName +  " 設定ポイントリスト " + (page * 10 -9) + "～" + max + "件目 / " + list.size() + "件中");
+		for (int i = page * 10 - 10; i < max; i++) {
+			sender.sendMessage(list.get(i).serialize());
+		}
+		return true;
+	}
+	/**
+	 * rcEdit
+	 */
+	private boolean execrcEdit(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		// ワールド取得
+		World world;
+		if (sender instanceof Player) {
+			world = ((Player) sender).getWorld();
+		} else {
+			sender.sendMessage("このコマンドはゲーム内からのみ実行出来ます");
+			return true;
+		}
+		// edit start
+		if (args.length == 3 && args[2].equalsIgnoreCase("start")) {
+			// 現在EditModeなら抜ける
+			if (RandomChest.instance.isRcEditMode()) {
+				sender.sendMessage("Error: 既にEditModeです");
 				return true;
 			}
-			// edit start
-			if (args.length == 4 && args[3].equalsIgnoreCase("start")) {
-				// 現在EditModeなら抜ける
-				if (RandomChest.instance.isRcEditMode()) {
-					sender.sendMessage("Error: 既にEditModeです");
-					return true;
-				}
-				/**
-				if (!checkList(args[2])) {
-					sender.sendMessage("Error: リスト\"" + args[2] + "\"が存在しません");
-					return true;
-				}
-				**/
-				// EditModeに入る
-				rc.enableEditMode(world, sender, args[2]);
+			/**
+			if (!checkList(args[2])) {
+				sender.sendMessage("Error: リスト\"" + args[1] + "\"が存在しません");
 				return true;
 			}
-			// edit end
-			if (args.length == 3 && args[2].equalsIgnoreCase("end")) {
-				if (RandomChest.instance.isRcEditMode()) {
-					rc.disableEditMode(sender);
-				} else {
-					sender.sendMessage("Error: EditModeではありません");
-				}
-				return true;
+			**/
+			// EditModeに入る
+			rc.enableEditMode(world, sender, args[1]);
+			return true;
+		}
+		// edit end
+		if (args.length == 2 && args[1].equalsIgnoreCase("end")) {
+			if (RandomChest.instance.isRcEditMode()) {
+				rc.disableEditMode(sender);
+			} else {
+				sender.sendMessage("Error: EditModeではありません");
 			}
+			return true;
 		}
 		return false;
 	}
