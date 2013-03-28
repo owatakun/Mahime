@@ -24,7 +24,6 @@ public class RandomChest {
 	private Plugin plugin;
 	private YamlConfiguration rcConf;
 	private LinkedHashMap<String, ArrayList<Point>> rcPointLists;
-//	private ArrayList<Point> rcPointList;
 	private World enableWorld;
 	private File rcFile;
 	private String nowEditing;
@@ -37,7 +36,6 @@ public class RandomChest {
 		this.rcFile = new File(plugin.getDataFolder(), "rc.yml");
 		this.rcConf = rcConf;
 		this.rcPointLists = new LinkedHashMap<String, ArrayList<Point>>();
-//		this.rcPointList = new ArrayList<Point>();
 		loadRcPointLists();
 		this.rcEditBlock = rcConf.getInt("rcEditBlock", 120);
 		this.nowEditing = null;
@@ -70,7 +68,7 @@ public class RandomChest {
 		}
 		((Player) sender).getInventory().addItem(new ItemStack(getRcEditBlock(), 1));
 		nowEditing = listName;
-		sender.sendMessage(listName + " のEditModeを開始しました");
+		plugin.getServer().broadcast(listName + " のEditModeを開始しました", "mahime.admin");
 		if (errList.size() != 0) {
 			sender.sendMessage("Error: 以下の箇所に他のブロックが存在したため、これらの指定を削除しました");
 			for (Point errPt: errList) {
@@ -98,7 +96,7 @@ public class RandomChest {
 				e.printStackTrace();
 			}
 			rcEditMode = false;
-			sender.sendMessage(nowEditing + " のEditModeを終了しました");
+			plugin.getServer().broadcast(nowEditing + " のEditModeを終了しました", "mahime.admin");
 			nowEditing = null;
 			enableWorld = null;
 		}
